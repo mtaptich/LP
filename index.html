@@ -1,0 +1,264 @@
+<html ng-app="LPapp">
+  <head>
+    <title>LP Visualized</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.18/angular.min.js"></script>
+    <script src="LP_PartOne.js"></script>
+    <script src="angular-dropdowns.js"></script>
+    <link href="setosa.css" rel="stylesheet">
+    <link href="angular-dropdowns.css" rel="stylesheet">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <style>
+
+      evt {
+        padding: 0px 4px 2px 4px;
+        font-weight: bold;
+        color: white;
+        display: inline-block;
+        cursor:pointer;
+      }
+      evt div {
+        border-radius: 5px;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+  
+      ul
+      {
+      list-style-type: none;
+      }
+      input{
+        text-align: center;
+        line-height: 31.5px;
+        margin-top: -6px;
+
+      }
+
+      input.btn {
+        height: 35px;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+      }
+
+      .x.axis text, .y.axis text{
+        font-size: 20px;
+        font-weight: normal;
+      }
+
+      .line, .xpline{
+        fill: none;
+        stroke: #000;
+        stroke-dasharray: 10px 1px;
+        stroke-width: 2px;
+      }
+
+      .pairs{
+        fill: none;
+        stroke: #000;
+        stroke-dasharray: 3px 3px;
+        stroke-width: 3px;
+      }
+
+      .clear{
+        text-align: right
+      }
+
+      .area, .xp{
+        fill-opacity: 0.9;
+        fill:#fff;
+      }
+
+      .dot{
+        fill: #2966C0;
+      }
+
+      .boundsunder path, .boundsunder line {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 3px;
+      }
+
+      .bounds {
+        stroke: #000;
+        stroke-width: 5px;
+      }
+
+      .dial{
+        fill: #B22222;
+      }
+      .paired{
+        width:100%;
+      }
+      .paired .simplechart{
+        float: left;
+        width:50%;
+      }
+
+      .clear {
+          clear: both;
+      }
+
+      .space{
+        margin-top: 30px;
+      }
+
+      .boundedarea{
+        fill: #B22222;
+      }
+
+    </style>
+  </head>
+  <body>
+  <section class="title">
+    <div class="title-region">
+      <h1 class="title">Linear Programming (Part 1)</h1>
+      <h3 class="by-line">Explained Visually</h3>
+    </div>
+  </section>
+
+  <section>
+  <p>By <a href="http://twitter.com/MikeTaptich">Mike Taptich</a></p>
+  <p> Linear Programming (LP) is one of many mathematical <a href="http://en.wikipedia.org/wiki/Mathematical_optimization#Major_subfields" target="_blank"><evt label="models" bg="#2966C0"></evt></a> used in optimization (e.g., maximization or minimization). Formally, LP is the process of selecting optimal policies for a linear function subject to linear constraints. The most common applications of LPs usually come in the following form:</p>
+
+  <p><em>You find yourself in a situation where you must allocate a limited set of resources among competing activities in the most efficient manner, given a number of restrictions.</em></p>
+
+  <p> While many engineering programs will dedicate entire courses to solving LPs, I plan to only present you with a few graphical examples that review two fundamentals of linear programing and optimization.</p>
+  <ol style="font-size: 18px; margin-top: 40px;">
+    <li><h3><a href="#bounding">Bounding</a></h3></li>
+    <br>
+    <li><h3><a href="#extremepoints">Extreme Points</a></h3></li>
+  </ol>
+  </section>
+  <hr>
+  <section ng-controller="OneDcontroller">
+  <h1 id="bounding"><a href="http://en.wikipedia.org/wiki/Constrained_optimization">#Bounding</a></h1>
+  <p> A constraint is a condition placed on a decision variable or combination of decision variables that must be satisfied. Constaints are what define the <a href="http://en.wikipedia.org/wiki/Feasible_region" target="_blank"><evt label="feasible region" bg="#2966C0"></evt></a> of all possible solutions to an LP in some known real coordinate space, <b>R</b><sup>n</sup>.</p>
+
+  <p> In standard form, LP constraints may allow the linear combination of decision variables up to a point (i.e., less than or equal to) or hold these combinations to be equal to some value. </p>
+
+  <p> A one-dimensional example, <b>R</b><sup>1</sup>:</p>
+  <div class="paired">
+    <div simple-chart id="a1" h="150" w="450" t="1x <= 10" dim="1" func="1dline" xb="10"></div>
+    <div simple-chart id="a2" h="150" w="450" t="1x = 10" dim="1" func="1Dcircle" xb="10"></div>
+  </div>
+  <br class="clear">
+  <p> A two-dimensional example, <b>R</b><sup>2</sup>:</p>
+  <div class="paired">
+    <div simple-chart id="a3" h="300" w="450" t="1x + 1y <= 10" dim="2" func="2Darea"  xb="10" yb="10"></div>
+    <div simple-chart id="a4" h="300" w="450" t="1x + 1y = 10" dim="2" func="2Dline"  xb="10" yb="10"></div>
+  </div>
+  <br class="clear">
+  <p class="space">For each case, the feasible region is represented in red. Again, a solution to an LP is possible if a policy is chosen within this region. </p>
+  <br> 
+  <h2>Application</h2>
+  <p>Now, suppose that you are the sole controller over your family's household thermostat. Without knowing it, you may have been intuitively solving a constrained LP! Operating as the controller, you may decide on some dial setting (<em>x</em>) that will maintain the house at a respective temperature. The following are examples of constraints you may face under different LP objectives.</p>
+  <br>
+
+  <h3>Maximize x:</h3> 
+  <br>
+  <p> Your sister <em>insists</em> that you make the house as hot as possible, but she isn't in the mood to argue with your brother.
+  <!--<p style="margin-bottom: 90px;">(constraints:  maximum technically possible or maximum possible given your brother's maximum preference.)</p>-->
+  <div one-D-Bounds id="ex1" h="150" w="1000"></div>
+  <br>
+  <h3>Minimize x:</h3> 
+  <br>
+  <p> Your brother <em>insists</em> that you make the house as cold as possible, but your dad prefers that the air conditioning unit remains offline. 
+  <div one-D-Bounds id="ex2" h="150" w="1000"></div>
+  <br>
+  <h3>Maximize |x - x<sub>0</sub>|:</h3> 
+  <br>
+  <p> All conditions considered, you decide to choose the dial setting that is greatest from your current temperature setting. 
+  <div one-D-Bounds id="ex3" h="150" w="1000"></div>
+  <br>
+  <br>
+  <p>In this last example, the feasible region or solution set was all the possible temperatures within your sister and father's preferential constraints. Given your final objective, you decide on the optimal policy of 78 degrees F. This choice is referred to as a <a href="http://mathworld.wolfram.com/LinearSystemofEquations.html" target="_blank"><evt label="unique solution" bg="#2966C0"></evt></a>. However, not all LPs result in this condition. The solution of an LP can also be either <em>infeasible</em> or <em>unbounded</em>.</p>
+  <br>
+  <h3 style="margin-top: 10px;">Maximize x (infeasible):</h3> 
+  <br>
+  <p> An infeasible solution implies that the feasible region is over-constrained and no solution is possible. In our previous examples, you would arrive at an infeasbile solution if your brother's maximum temperature preference required you to use the broken AC unit (i.e., colder than applying strictly heat).</p>
+  <div one-D-Bounds id="ex4" h="150" w="1000"></div>
+  <br>
+  <h3>Maximize x (unbounded):</h3> 
+  <br>
+  <p> An unbounded solution implies the solution space continues forever in at least one direction. In our previous examples, you would arrive at a unbounded solution if your thermostat could <em>always</em> increase the temperature in your house (i.e., approaches infinity possible solutions).</p>
+  <div one-D-Bounds id="ex5" h="150" w="1000"></div>
+  <br>
+  <p> Did you notice that your optimal choice for the temperature dial always seemed to lie somewhere along a bound?  Well, that is because unique solutions of LPs will never fall within the <a href="http://en.wikipedia.org/wiki/Open_set" target="_blank"><evt label="strict interior" bg="#2966C0"></evt></a> of the feasible region! </p>
+  </section>
+  <hr>
+  <section ng-controller="TwoDcontroller">
+    <h1 id="extremepoints"><a href="http://en.wikipedia.org/wiki/Extreme_point">#Extreme Points</a></h1>
+    <p> To ellborate more on my last point, I have provided you with three additional examples: <a data-id='ex21' ng-click='updateexample($event)'>Problem 1</a>, <a data-id='ex22' ng-click='updateexample($event)'>Problem 2</a>, <a data-id='ex23' ng-click='updateexample($event)'>Problem 3</a>.  Now, drag the blue ball to the coordinate in the x-y space that optimizes each LP. Feel free to build your own problems, too.</p>
+
+    <br>
+    <h2>Objective Value: &nbsp; Z = {{xobj+"x +"+yobj+"y = "}} <span ng-style="UporDown">{{(xobj*Z.x + yobj*Z.y | number : 5)}}</span></h2>
+
+    <div class="row">
+      <div style="float: left;">
+        <div linear-chart chart-data="lines"></div>
+      </div>
+   
+      <div style="float: right; margin-top:25px">
+        <div>
+            <form >
+              <span style="font-weight: bold;">OBJ: &nbsp;</span>
+              <div dropdown-select="objOptions" dropdown-model="objSelected" class="btn" ></div> &nbsp;
+              <input type="text" ng-model="xobj"  size="3"
+                     placeholder="Cx">&nbsp;x + 
+              <input type="text" ng-model="yobj"  size="3"
+                     placeholder="Cy">&nbsp;y &nbsp
+            </form>
+        </div>
+
+        <span style="font-weight: bold;">Subject to:</span>
+        <br>
+        <ul class="unstyled">
+          <li ng-repeat="constraint in constraints">
+            <span>{{constraint.text}}</span>
+          </li>
+        </ul>
+        <div>
+            <form ng-submit="addconstraint()">
+              <input type="text" ng-model="xconstraint"  size="3"
+                     placeholder="Ax">&nbsp;x + 
+              <input type="text" ng-model="yconstraint"  size="3"
+                     placeholder="Ay">&nbsp;y &nbsp
+               <div dropdown-select="ddSelectOptions" dropdown-model="ddSelectSelected" class="btn"></div> &nbsp;
+              <input type="text" ng-model="bconstraint"  size="3"
+                     placeholder="b">
+              <input class="btn" type="submit" value="add">
+            </form>
+            <div class="clear">
+              [ <a href="" ng-click="poplast()">undo</a> ] &nbsp [ <a href="" ng-click="clear()">clear</a> ]
+            </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size: 0.9em;"> (Hint: If you over-constrain your circle, click the feasile region and it will reappear.)
+     <p> In each problem, you will find that the optimal policy, X<sup>*</sup> = (x<sup>*</sup>, y<sup>*</sup>), falls along the boundary of the feasible region. This makes sense if you think about your decision-making process in terms of your objective:  why settle for less than you deserve!</p>
+
+     <p>Thus, X<sup>*</sup> is called an extreme point. <em>These extreme points exists if and only if you cannot represent the point as a convex combination of points that fall within the feasible region.</em> You may be asking yourself, "<a href="http://en.wikipedia.org/wiki/Convex_combination" target="_blank"><evt label="convex combination" bg="#2966C0"></evt></a> of... huh?"  This was my early reaction to the math-heavy jargon relating to extreme points and more generally optimization. If this is the case, I found that this definition is best explained visually.  </p>
+
+   <p>In two dimensions (x,y), a convex combination of two points is simply a line drawn between them.  Since extreme points by nature fall along the boundary of the <a href="http://en.wikipedia.org/wiki/Convex_function" target="_blank"><evt label="convex" bg="#2966C0"></evt></a> feasible region, you can <em>never</em> draw a line through the point using any points with the set!  </p>
+
+  <div extreme-points id="xp" h="300" w="1000"></div>
+
+  <br>
+  <p>Extreme points and bounding are the fundamental building blocks used in algorithms that efficiently <a href="http://en.wikipedia.org/wiki/George_Dantzig" target="_blank"><evt label="solve LPs" bg="#2966C0"></evt></a>.  In the next <em>Visually Explained</em> post on linear programming, I hope to dive deeper into solving LPs! </p>
+  <br>
+  </section>
+  <hr>
+  <section>
+    <p><em>Mike Taptich is a PhD student in the Energy, Civil Infrastructure, and Climate program at UC Berkeley.  He is also a co-founder of the <a href="http://vudlab.com/#/" target="_blank">Visualizing Urban Data Idealab</a>.</em></p>
+  </section>
+   
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
